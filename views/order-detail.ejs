@@ -1,0 +1,70 @@
+<%
+  const waText = `Halo ${order.customerName}, terima kasih sudah order di Minerals & Co.
+
+No. Order: ${order.orderNumber}
+Total: Rp ${order.totalAmount.toLocaleString('id-ID')}
+
+Pesanan Anda sedang kami proses. Terima kasih!`;
+  const waMsgEncoded = encodeURIComponent(waText);
+  const phoneClean = order.phone.replace(/[^0-9]/g, '').replace(/^0/, '62');
+  const emailSubject = encodeURIComponent('Konfirmasi Order ' + order.orderNumber + ' - Minerals & Co.');
+  const emailBody = encodeURIComponent(waText);
+%>
+<%- include('partials/head', { title: 'Order ' + order.orderNumber, hideNav: false }) %>
+<p><a href="/orders">&larr; Kembali ke daftar order</a></p>
+<h1>Order <%= order.orderNumber %></h1>
+<p><span class="status status-<%= order.status %>"><%= order.status %></span></p>
+
+<div class="panel">
+  <h2>Info Pembeli</h2>
+  <p><b>Nama:</b> <%= order.customerName %></p>
+  <p><b>Telepon:</b> <%= order.phone %></p>
+  <p><b>Email:</b> <%= order.email || '-' %></p>
+  <p><b>Alamat:</b> <%= order.address %>, <%= order.city || '' %> <%= order.postalCode || '' %></p>
+  <p><b>Catatan:</b> <%= order.notes || '-' %></p>
+</div>
+
+<div class="panel">
+  <h2>Item Pesanan</h2>
+  <table class="data-table">
+    <thead><tr><th>SKU</th><th>Produk</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr></thead>
+    <tbody>
+    <% order.items.forEach(it => { %>
+      <tr>
+        <td><%= it.sku %></td>
+        <td><%= it.productName %></td>
+        <td><%= it.qty %></td>
+        <td>Rp <%= it.price.toLocaleString('id-ID') %></td>
+        <td>Rp <%= it.subtotal.toLocaleString('id-ID') %></td>
+      </tr>
+    <% }) %>
+    </tbody>
+  </table>
+  <p class="total-line"><b>Total: Rp <%= order.totalAmount.toLocaleString('id-ID') %></b></p>
+</div>
+
+<div class="panel">
+  <h2>Update Status</h2>
+  <form method="POST" action="/orders/<%= order.id %>/status" class="inline-form-grid">
+    <select name="status">
+      <option value="baru" <%= order.status==='baru'?'selected':'' %>>Baru</option>
+      <option value="diproses" <%= order.status==='diproses'?'selected':'' %>>Diproses</option>
+      <option value="dikirim" <%= order.status==='dikirim'?'selected':'' %>>Dikirim</option>
+      <option value="selesai" <%= order.status==='selesai'?'selected':'' %>>Selesai</option>
+      <option value="batal" <%= order.status==='batal'?'selected':'' %>>Batal</option>
+    </select>
+    <button type="submit">Update</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h2>Aksi</h2>
+  <div class="actions-row">
+    <a href="/orders/<%= order.id %>/resi" target="_blank" class="btn">🖨 Print Resi</a>
+    <a href="https://wa.me/<%= phoneClean %>?text=<%= waMsgEncoded %>" target="_blank" class="btn whatsapp">💬 Konfirmasi via WhatsApp</a>
+    <% if (order.email) { %>
+    <a href="mailto:<%= order.email %>?subject=<%- emailSubject %>&body=<%- emailBody %>" class="btn secondary">✉️ Konfirmasi via Email</a>
+    <% } %>
+  </div>
+</div>
+<%- include('partials/foot') %>

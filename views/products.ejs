@@ -1,0 +1,46 @@
+<%- include('partials/head', { title: 'Produk - Toko Panel 2', hideNav: false }) %>
+<h1>Produk (SKU & Harga)</h1>
+<% if (message) { %><p class="notice"><%= message %></p><% } %>
+
+<div class="panel">
+  <h2>Upload Massal</h2>
+  <p>Upload file CSV atau Excel (.xlsx) dengan kolom: <code>sku, name, price, stock</code>. SKU yang sudah ada akan otomatis diupdate (harga &amp; stok).</p>
+  <a href="/products/template.csv" class="btn small secondary">Download Template CSV</a>
+  <form method="POST" action="/products/upload" enctype="multipart/form-data" class="upload-form">
+    <input type="file" name="file" accept=".csv,.xlsx,.xls" required>
+    <button type="submit">Upload</button>
+  </form>
+</div>
+
+<div class="panel">
+  <h2>Tambah / Edit Manual</h2>
+  <form method="POST" action="/products/add" class="inline-form-grid">
+    <input type="text" name="sku" placeholder="SKU" required>
+    <input type="text" name="name" placeholder="Nama Produk" required>
+    <input type="number" name="price" placeholder="Harga" required min="0">
+    <input type="number" name="stock" placeholder="Stok" value="0" min="0">
+    <button type="submit">Simpan</button>
+  </form>
+</div>
+
+<h2>Daftar Produk (<%= products.length %>)</h2>
+<table class="data-table">
+  <thead><tr><th>SKU</th><th>Nama</th><th>Harga</th><th>Stok</th><th></th></tr></thead>
+  <tbody>
+  <% products.forEach(p => { %>
+    <tr>
+      <td><%= p.sku %></td>
+      <td><%= p.name %></td>
+      <td>Rp <%= p.price.toLocaleString('id-ID') %></td>
+      <td><%= p.stock %></td>
+      <td>
+        <form method="POST" action="/products/<%= p.id %>/delete" onsubmit="return confirm('Hapus produk ini?')" class="inline-form">
+          <button type="submit" class="link-btn danger">Hapus</button>
+        </form>
+      </td>
+    </tr>
+  <% }) %>
+  <% if (products.length === 0) { %><tr><td colspan="5">Belum ada produk. Upload file atau tambah manual di atas.</td></tr><% } %>
+  </tbody>
+</table>
+<%- include('partials/foot') %>

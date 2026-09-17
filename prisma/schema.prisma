@@ -1,0 +1,46 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  id        Int      @id @default(autoincrement())
+  sku       String   @unique
+  name      String
+  price     Int
+  stock     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id           Int         @id @default(autoincrement())
+  orderNumber  String      @unique
+  customerName String
+  phone        String
+  email        String?
+  address      String
+  city         String?
+  postalCode   String?
+  notes        String?
+  status       String      @default("baru") // baru, diproses, dikirim, selesai, batal
+  totalAmount  Int
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  items        OrderItem[]
+}
+
+model OrderItem {
+  id          Int    @id @default(autoincrement())
+  orderId     Int
+  order       Order  @relation(fields: [orderId], references: [id])
+  sku         String
+  productName String
+  price       Int
+  qty         Int
+  subtotal    Int
+}

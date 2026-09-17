@@ -1,0 +1,21 @@
+<%- include('partials/head', { title: 'Dashboard - Toko Panel 2', hideNav: false }) %>
+<h1>Dashboard</h1>
+<div class="cards">
+  <div class="card">
+    <h2><%= totalProducts %></h2>
+    <p>Total Produk</p>
+  </div>
+  <div class="card">
+    <h2><%= totalOrders %></h2>
+    <p>Total Order</p>
+  </div>
+  <div class="card highlight">
+    <h2><%= ordersBaru %></h2>
+    <p>Order Baru (belum diproses)</p>
+  </div>
+</div>
+<div class="actions-row">
+  <a href="/orders?status=baru" class="btn">Lihat Order Baru</a>
+  <a href="/products" class="btn secondary">Kelola Produk</a>
+</div>
+<%- include('partials/foot') %>

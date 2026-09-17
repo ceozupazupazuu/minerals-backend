@@ -1,0 +1,29 @@
+<%- include('partials/head', { title: 'Order - Toko Panel 2', hideNav: false }) %>
+<h1>Order Masuk</h1>
+
+<div class="filter-tabs">
+  <a href="/orders" class="<%= currentStatus === 'semua' ? 'active' : '' %>">Semua</a>
+  <a href="/orders?status=baru" class="<%= currentStatus === 'baru' ? 'active' : '' %>">Baru</a>
+  <a href="/orders?status=diproses" class="<%= currentStatus === 'diproses' ? 'active' : '' %>">Diproses</a>
+  <a href="/orders?status=dikirim" class="<%= currentStatus === 'dikirim' ? 'active' : '' %>">Dikirim</a>
+  <a href="/orders?status=selesai" class="<%= currentStatus === 'selesai' ? 'active' : '' %>">Selesai</a>
+  <a href="/orders?status=batal" class="<%= currentStatus === 'batal' ? 'active' : '' %>">Batal</a>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>No. Order</th><th>Pembeli</th><th>Total</th><th>Status</th><th>Tanggal</th><th></th></tr></thead>
+  <tbody>
+  <% orders.forEach(o => { %>
+    <tr>
+      <td><%= o.orderNumber %></td>
+      <td><%= o.customerName %></td>
+      <td>Rp <%= o.totalAmount.toLocaleString('id-ID') %></td>
+      <td><span class="status status-<%= o.status %>"><%= o.status %></span></td>
+      <td><%= o.createdAt.toLocaleDateString('id-ID') %></td>
+      <td><a href="/orders/<%= o.id %>" class="btn small">Detail</a></td>
+    </tr>
+  <% }) %>
+  <% if (orders.length === 0) { %><tr><td colspan="6">Belum ada order.</td></tr><% } %>
+  </tbody>
+</table>
+<%- include('partials/foot') %>

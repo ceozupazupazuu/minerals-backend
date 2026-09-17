@@ -1,0 +1,14 @@
+<%- include('partials/head', { title: 'Login - Toko Panel 2', hideNav: true }) %>
+<div class="login-box">
+  <h1>Toko Panel 2</h1>
+  <p class="subtitle">Panel Admin</p>
+  <% if (error) { %><p class="error"><%= error %></p><% } %>
+  <form method="POST" action="/login">
+    <label>Username</label>
+    <input type="text" name="username" required autofocus>
+    <label>Password</label>
+    <input type="password" name="password" required>
+    <button type="submit">Login</button>
+  </form>
+</div>
+<%- include('partials/foot') %>
